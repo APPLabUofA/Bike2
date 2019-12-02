@@ -2,19 +2,21 @@ clear all
 close all
 ccc
 
-exp = 'pilot';
-%subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
-...'112' '113' '114' '115' '116' '117' '118'};
-subs = {'100'}; %to test on just one sub
+exp = 'bike2';
+subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110'...
+    '111' '113' '114' '115' '116' '117' '118' '119' '120' '121' '122' '123'...
+    '125' '126' '127' '128' '129' '130' '131' '132' '133' '134' '135' '136'};
+
+% subs = {'132' '133'}; %to test on just one sub
 
 nsubs = length(subs);
-conds = {'eightythird';'elevenst'; 'sask';};%preferred, clockwise - non-preffered, CCW
+conds = {'sask' '110st' '83ave'};
 nconds = length(conds);
 Pathname = 'M:\Data\Bike_Mazumder\';
 
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
 
-
+%%
 for i_sub = 1:nsubs
     for i_cond = 1:nconds
         
@@ -42,8 +44,8 @@ end
 
 %%
 %grand average plots + difference
-erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:)); 
-figure('Color',[1 1 1]); 
+erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
+figure('Color',[1 1 1]);
 for i_cond = 1:nconds
     switch i_cond
         case 1
@@ -52,121 +54,247 @@ for i_cond = 1:nconds
             colour = 'g';
         case 3
             colour = 'r';
-%         case 4
-%             colour = 'm';
+            %         case 4
+            %             colour = 'm';
     end
     
     subplot(2,nconds,i_cond);
-        boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(erp_out(:,1,electrode,i_cond,:),[],5))./sqrt(nsubs),colour,...
+    boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(erp_out(:,1,electrode,i_cond,:),[],5))./sqrt(nsubs),colour,...
         EEG.times,squeeze(mean(erp_out(:,2,electrode,i_cond,:),5)),squeeze(std(erp_out(:,2,electrode,i_cond,:),[],5))./sqrt(nsubs),'k');
-        set(gca,'Color',[1 1 1]);
-        set(gca,'YDir','reverse');
-        if i_cond == 2
-            legend('Targets','Standards','Location','NorthEast');
-        end
-        axis tight; ylim([-8 12]);
-        line([-200 1000],[0 0],'color','k');
-        line([0 0],[-2.5 8],'color','k');
-        title(conds{i_cond});
-        xlabel('Time (ms)');
-        ylabel('Voltage (uV)');
+    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    if i_cond == 2
+        legend('Targets','Standards','Location','NorthEast');
+    end
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title(conds{i_cond});
+    xlabel('Time (ms)');
+    ylabel('Voltage (uV)');
     
     subplot(2,nconds,nconds+i_cond);
-        boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(erp_diff_out(:,electrode,i_cond,:),[],4))./sqrt(nsubs),colour);
-        set(gca,'Color',[1 1 1]);
-        set(gca,'YDir','reverse'); 
-        if i_cond == 2
-            legend('Targets-Standards','Location','NorthEast'); 
-        end
-        axis tight; ylim([-8 12]);
-        line([-200 1000],[0 0],'color','k');
-        line([0 0],[-2.5 8],'color','k');
-        title(conds{i_cond});
-        xlabel('Time (ms)');
-        ylabel('Voltage (uV)');
-        
+    boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(erp_diff_out(:,electrode,i_cond,:),[],4))./sqrt(nsubs),colour);
+    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    if i_cond == 2
+        legend('Targets-Standards','Location','NorthEast');
+    end
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title(conds{i_cond});
+    xlabel('Time (ms)');
+    ylabel('Voltage (uV)');
+    
+end
+%%
+%SINGLE ERPS FOR INDIVIDUAL COPYING
+
+for i_cond = 1:nconds
+    switch i_cond
+        case 1
+            colour = 'b';
+        case 2
+            colour = 'g';
+        case 3
+            colour = 'r';
+    end
+    
+    figure;
+    boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(erp_out(:,1,electrode,i_cond,:),[],5))./sqrt(nsubs),colour,...
+        EEG.times,squeeze(mean(erp_out(:,2,electrode,i_cond,:),5)),squeeze(std(erp_out(:,2,electrode,i_cond,:),[],5))./sqrt(nsubs),'k');
+    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    if i_cond == 2 || 3
+        legend('Targets','Standards','Location','NorthEast');
+    elseif i_cond == 1
+        legend('Targets','Standards','Location','NorthEast');
+    end
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title(conds{i_cond});
+    xlabel('Time (ms)');
+    ylabel('Voltage (uV)');
 end
 
+%%
+%difference waves on same axis
+erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
+figure('Color',[1 1 1]);
+for i_cond = 1:nconds
+    switch i_cond
+        case 1
+            colour = 'b';
+        case 2
+            colour = 'g';
+        case 3
+            colour = 'r';
+            
+    end
+    
+    subplot;
+    boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(0))./sqrt(nsubs),colour);
+    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title('Difference Wave');
+    xlabel('Time (ms)');
+    ylabel('Voltage (uV)');
+end
+L(1) = plot(nan, nan, 'b');
+L(2) = plot(nan, nan, 'g');
+L(3) = plot(nan, nan, 'r');
+legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northwest')
+%%
+%t-test for dif waves
+time_window = find(EEG.times>340,1)-1:find(EEG.times>540,1)-2;
+erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
 
-%% 
-%Difference Waves at any given electrodes. 
+%%%timepoints X events X electrodes X conditions X participants%%%%
 
-figure('Color',[1 1 1]); 
+%  COMPARING DIFFERENCE WAVES for non-preferred conditions
+[h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,electrode,1,:),1)),squeeze(mean(erp_diff_out(time_window,electrode,3,:),1)),.05,'both',1) 
+%%
+%%
+%Targets on same axis
+figure;
+for i_cond = 1:nconds
+    switch i_cond
+        case 1
+            colour = 'b';
+        case 2
+            colour = 'g';
+        case 3
+            colour = 'r';
+    end
+    
+    boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(0))./sqrt(nsubs),colour);
+    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title('Target Tones');
+    xlabel('Time (ms)');
+    ylabel('Voltage (uV)');
+end
+L(1) = plot(nan, nan, 'b');
+L(2) = plot(nan, nan, 'g');
+L(3) = plot(nan, nan, 'r');
+legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northeast')
+
+%Standards on same axis
+figure;
+for i_cond = 1:nconds
+    switch i_cond
+        case 1
+            colour = 'b';
+        case 2
+            colour = 'g';
+        case 3
+            colour = 'r';
+    end
+    
+    boundedline(EEG.times,squeeze(mean(erp_out(:,2,electrode,i_cond,:),5)),squeeze(std(0))./sqrt(nsubs),colour);
+    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title('Standard Tones');
+    xlabel('Time (ms)');
+    ylabel('Voltage (uV)');
+end
+L(1) = plot(nan, nan, 'b');
+L(2) = plot(nan, nan, 'g');
+L(3) = plot(nan, nan, 'r');
+legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northeast')
+
+%%
+%Difference Waves at any given electrodes.
+
+figure('Color',[1 1 1]);
 subplot(1,3,1)
-        electrode = 15;
-        boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,1,:),4)), squeeze(std(erp_diff_out(:,electrode,1,:),[],4))./sqrt(nsubs),'b',...
-                    EEG.times,squeeze(mean(erp_diff_out(:,electrode,2,:),4)), squeeze(std(erp_diff_out(:,electrode,2,:),[],4))./sqrt(nsubs),'g', ...
-                     EEG.times,squeeze(mean(erp_diff_out(:,electrode,3,:),4)), squeeze(std(erp_diff_out(:,electrode,3,:),[],4))./sqrt(nsubs),'r', ...
-                     EEG.times,squeeze(mean(erp_diff_out(:,electrode,4,:),4)), squeeze(std(erp_diff_out(:,electrode,4,:),[],4))./sqrt(nsubs),'k');
+electrode = 15;
+boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,1,:),4)), squeeze(std(erp_diff_out(:,electrode,1,:),[],4))./sqrt(nsubs),'b',...
+    EEG.times,squeeze(mean(erp_diff_out(:,electrode,2,:),4)), squeeze(std(erp_diff_out(:,electrode,2,:),[],4))./sqrt(nsubs),'g', ...
+    EEG.times,squeeze(mean(erp_diff_out(:,electrode,3,:),4)), squeeze(std(erp_diff_out(:,electrode,3,:),[],4))./sqrt(nsubs),'r', ...
+    EEG.times,squeeze(mean(erp_diff_out(:,electrode,4,:),4)), squeeze(std(erp_diff_out(:,electrode,4,:),[],4))./sqrt(nsubs),'k');
 
-               set(gca,'Color',[1 1 1]);
-        set(gca,'YDir','reverse'); 
+set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
 
-        
-        legend(conds,'Location','NorthEast'); 
-       
-        axis tight; ylim([-8 12]);
-        line([-200 1000],[0 0],'color','k');
-        line([0 0],[-10 15],'color','k');
-        title('Difference Wave, Pz');
-        xlabel('Time (ms)');
-        ylabel('Voltage (uV)');
-        
-        
+
+legend(conds,'Location','NorthEast');
+
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-10 15],'color','k');
+title('Difference Wave, Pz');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
+
+
 %Comparing targets and standards on the same plot
 subplot(1,3,2)
-        electrode = 15;
-        boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,1,:),5)), squeeze(std(erp_out(:,1,electrode,1,:),[],5))./sqrt(nsubs),'b',...
-                    EEG.times,squeeze(mean(erp_out(:,1,electrode,2,:),5)), squeeze(std(erp_out(:,1,electrode,2,:),[],5))./sqrt(nsubs),'g', ...
-                     EEG.times,squeeze(mean(erp_out(:,1,electrode,3,:),5)), squeeze(std(erp_out(:,1,electrode,3,:),[],5))./sqrt(nsubs),'r', ...
-                     EEG.times,squeeze(mean(erp_out(:,1,electrode,4,:),5)), squeeze(std(erp_out(:,1,electrode,4,:),[],5))./sqrt(nsubs),'k');
+electrode = 15;
+boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,1,:),5)), squeeze(std(erp_out(:,1,electrode,1,:),[],5))./sqrt(nsubs),'b',...
+    EEG.times,squeeze(mean(erp_out(:,1,electrode,2,:),5)), squeeze(std(erp_out(:,1,electrode,2,:),[],5))./sqrt(nsubs),'g', ...
+    EEG.times,squeeze(mean(erp_out(:,1,electrode,3,:),5)), squeeze(std(erp_out(:,1,electrode,3,:),[],5))./sqrt(nsubs),'r', ...
+    EEG.times,squeeze(mean(erp_out(:,1,electrode,4,:),5)), squeeze(std(erp_out(:,1,electrode,4,:),[],5))./sqrt(nsubs),'k');
 
-               set(gca,'Color',[1 1 1]);
-        set(gca,'YDir','reverse'); 
+set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
 
-        
-        legend(conds,'Location','NorthEast'); 
-       
-        axis tight; ylim([-8 12]);
-        line([-200 1000],[0 0],'color','k');
-        line([0 0],[-10 15],'color','k');
-        title('Targets, Pz');
-        xlabel('Time (ms)');
-        ylabel('Voltage (uV)');
+
+legend(conds,'Location','NorthEast');
+
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-10 15],'color','k');
+title('Targets, Pz');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
 subplot(1,3,3)
-        electrode = 15;
-        boundedline(EEG.times,squeeze(mean(erp_out(:,2,electrode,1,:),5)), squeeze(std(erp_out(:,2,electrode,1,:),[],5))./sqrt(nsubs),'b',...
-                    EEG.times,squeeze(mean(erp_out(:,2,electrode,2,:),5)), squeeze(std(erp_out(:,2,electrode,2,:),[],5))./sqrt(nsubs),'g', ...
-                     EEG.times,squeeze(mean(erp_out(:,2,electrode,3,:),5)), squeeze(std(erp_out(:,2,electrode,3,:),[],5))./sqrt(nsubs),'r', ...
-                     EEG.times,squeeze(mean(erp_out(:,2,electrode,4,:),5)), squeeze(std(erp_out(:,2,electrode,4,:),[],5))./sqrt(nsubs),'k');
+electrode = 15;
+boundedline(EEG.times,squeeze(mean(erp_out(:,2,electrode,1,:),5)), squeeze(std(erp_out(:,2,electrode,1,:),[],5))./sqrt(nsubs),'b',...
+    EEG.times,squeeze(mean(erp_out(:,2,electrode,2,:),5)), squeeze(std(erp_out(:,2,electrode,2,:),[],5))./sqrt(nsubs),'g', ...
+    EEG.times,squeeze(mean(erp_out(:,2,electrode,3,:),5)), squeeze(std(erp_out(:,2,electrode,3,:),[],5))./sqrt(nsubs),'r', ...
+    EEG.times,squeeze(mean(erp_out(:,2,electrode,4,:),5)), squeeze(std(erp_out(:,2,electrode,4,:),[],5))./sqrt(nsubs),'k');
 
-               set(gca,'Color',[1 1 1]);
-        set(gca,'YDir','reverse'); 
+set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
 
-        
-        legend(conds,'Location','Northeast'); 
-       
-        axis tight; ylim([-10 15]);
-        line([-200 1000],[0 0],'color','k');
-        line([0 0],[-10 15],'color','k');
-        title('Standards, Pz');
-        xlabel('Time (ms)');
-        ylabel('Voltage (uV)');
-  
-       %%
- %difference topographys
+
+legend(conds,'Location','Northeast');
+
+axis tight; ylim([-10 15]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-10 15],'color','k');
+title('Standards, Pz');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
+
+%%
+%difference topographys
 time_window = find(EEG.times>250,1)-1:find(EEG.times>450,1)-2;
 figure('Color',[1 1 1]);
 for i_cond = 1:nconds
     subplot(1,nconds,i_cond);
-       set(gca,'Color',[1 1 1]);
-        temp = mean(mean(erp_diff_out(time_window,:,i_cond,:),4),1)';
-        temp(16:18) = NaN;
-        topoplot(temp,'M:\Analysis\VR_P3\BrainAMP_EOG_VR.ced', 'whitebk','on','plotrad',.6,'maplimits',[-4 4]  )
-        title(conds{i_cond});
-        t = colorbar('peer',gca);
-        set(get(t,'ylabel'),'String', 'Voltage Difference (uV)');
-
+    set(gca,'Color',[1 1 1]);
+    temp = mean(mean(erp_diff_out(time_window,:,i_cond,:),4),1)';
+    temp(16:18) = NaN;
+    topoplot(temp,'M:\Analysis\VR_P3\BrainAMP_EOG_VR.ced', 'whitebk','on','plotrad',.6,'maplimits',[-4 4]  )
+    title(conds{i_cond});
+    t = colorbar('peer',gca);
+    set(get(t,'ylabel'),'String', 'Voltage Difference (uV)');
+    
 end
 %%
 
@@ -175,13 +303,13 @@ end
 % min(trial_count,[],3)
 % mean(trial_count,3)
 % max(trial_count,[],3)
-% 
+%
 % %mean and sd
 % mean(mean(erp_diff_out(time_window,7,1:3,:),1),4)
 % std(mean(erp_diff_out(time_window,7,1:3,:),1),[],4)
-% 
-% 
-% 
+%
+%
+%
 % ttest of each condition
 [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,7,1,:),1)),0,.05,'right',1)
 [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,7,2,:),1)),0,.05,'right',1)
