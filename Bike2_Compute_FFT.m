@@ -4,11 +4,11 @@
 ccc
 %
 exp = 'Bike2';
-subs = {'101'	'102'	'103'	'104'	'106'	'107'	'108'	'110'	'114'...
-    '115'	'116'	'117'	'118'	'119'	'120'	'121'	'123'	'125'	'126'	'127'...
+subs = {'100' '101'	'102'	'103'	'104'	'106'	'107'	'108'	'110'	'114'...
+    '115'	'116'	'117'	'118'	'119'	'120'	'121'	'123'	'126'	'127'...
     '128'	'129'	'130'	'131'	'132'	'133'	'134'	'135'	'136'};
 %subs = {'100'}; %to test on just one sub 
-
+% GOT RID OF 125 DUE TO NOISE 
 nsubs = length(subs); 
 conds = {'sask' '110st' '83ave'};
 conds_lab = {'Sask Drive Lane'; '110 Street Lane'; '83 Avenue Lane'};
@@ -36,8 +36,10 @@ eeglab redraw
 %9:10  --> P3:P4
 %11:12 --> O1:O2
 
-left_electrode = 5;
-right_electrode = 6;
+% left_electrode = 5;
+% right_electrode = 6;
+electrode = 15;
+
 
 wavenumber = 12; %wavelet cycles
 freqs = [1:1:30]; %wavelet frequencies
@@ -48,22 +50,19 @@ for i_sub = 1:nsubs
     fprintf(['Subject - ' num2str(i_sub) '. \n']);
     for i_cond = 1:nconds
         fprintf(['Condition - ' conds_lab{i_cond} '. \n']);
-        power = [];
         i_count = i_count+1; %which data set in ALLEEG to use
+        disp(ALLEEG(i_count).setname);
+        power = [];
         n_trials = ALLEEG(i_count).trials;
         for i_trial = 1:n_trials
-            for i_electrode = [left_electrode right_electrode] %pairs of contralateral electrodes
-                tempdata = ALLEEG(i_count).data(i_electrode, :,i_trial) ;
+            for i_electrode = 1:length([electrode]) %pairs of contralateral electrodes
+                tempdata = ALLEEG(i_count).data(electrode(i_electrode), :,i_trial) ;
                 [temp_power temp_times temp_phase] = BOSC_tf(tempdata,freqs,EEG.srate,wavenumber);
                 power(:,:,i_electrode,i_trial) = temp_power; %take log ?
             end
-            
         end
-        power_out(:,:,:,i_sub,i_cond) = nanmean(power,4); %save the power data
- 
-        
+        power_out(:,:,:,i_sub,i_cond) = nanmean(power,4); %save the power data, averaging across trials
     end
- 
 end
 
 %% plot spectrograms for each subject (rows) and condition (columns)
@@ -98,26 +97,106 @@ ylabel('Frequency (Hz)');
 power_spectra = squeeze(mean(power_out,2)); %collapse over time can pick time range here in 2nd dim.
 %frequency x electrode x subject x condition
 
-power_spectra_diff = squeeze( power_spectra(:,left_electrode,:,:)-...
-                            power_spectra(:,right_electrode,:,:));
-
-power_spectra_diff_mean = squeeze(mean(power_spectra_diff,2));
-power_spectra_diff_se = squeeze(std(power_spectra_diff,[],2)/sqrt(nsubs));
+% power_spectra_diff = squeeze( power_spectra(:,left_electrode,:,:)-...
+%                             power_spectra(:,right_electrode,:,:));
+% power_spectra_diff_mean = squeeze(mean(power_spectra_diff,2));
+% power_spectra_diff_se = squeeze(std(power_spectra_diff,[],2)/sqrt(nsubs));
+power_spectra_mean = squeeze(mean(power_spectra,2));
+power_spectra_se = squeeze(std(power_spectra,[],2)/sqrt(nsubs));
 
 %% Plot spectra accross conditions
 figure;
-boundedline(freqs,power_spectra_diff_mean(:,1),power_spectra_diff_se(:,1),'r',...
-            freqs,power_spectra_diff_mean(:,2),power_spectra_diff_se(:,2),'b',...
-            freqs,power_spectra_diff_mean(:,3),power_spectra_diff_se(:,3),'g');
+boundedline(freqs,power_spectra_mean(:,1),power_spectra_se(:,1),'r',...
+            freqs,power_spectra_mean(:,2),power_spectra_se(:,2),'b',...
+            freqs,power_spectra_mean(:,3),power_spectra_se(:,3),'g');
 axis tight
 xlim([0 30])
-ylim([-100000 3000000])
-
+ylim ([0 3000000])
 xlabel('Frequency (Hz)');
 ylabel('Power (uV^2)');
 title('Power (Left - Right)');
 legend(conds_lab,'Location','NorthEast');
 
+%% isolate error in any of the 3 conditions
+% close all
+figure;
+boundedline(freqs,power_spectra_mean(:,1),power_spectra_se(:,1),'r',...
+    freqs,power_spectra_mean(:,2),0,'b',...
+    freqs,power_spectra_mean(:,3),0,'g'),
+axis tight 
+xlim([0 30])
+ylim ([0 3000000])
+xlabel('Frequency (Hz)');
+ylabel('Power (uV^2)');
+title('Power @ PZ');
+legend(conds_lab,'Location','NorthEast');
+
+figure;
+boundedline(freqs,power_spectra_mean(:,1),0,'r',...
+    freqs,power_spectra_mean(:,2),power_spectra_se(:,2),'b',...
+    freqs,power_spectra_mean(:,3),0,'g'),
+axis tight 
+xlim([0 30])
+ylim ([0 3000000])
+xlabel('Frequency (Hz)');
+ylabel('Power (uV^2)');
+title('Power @ PZ');
+legend(conds_lab,'Location','NorthEast');
+
+figure;
+boundedline(freqs,power_spectra_mean(:,1),0,'r',...
+    freqs,power_spectra_mean(:,2),0,'b',...
+    freqs,power_spectra_mean(:,3),power_spectra_se(:,3),'g'),
+axis tight 
+xlim([0 30])
+ylim ([0 3000000])
+xlabel('Frequency (Hz)');
+ylabel('Power (uV^2)');
+title('Power @ PZ');
+legend(conds_lab,'Location','NorthEast');
+%% a plot for each sub
+ close all
+for i_sub = 1:nsubs
+    figure;
+    boundedline (freqs,mean(power_spectra(:,i_sub,2),3), 0, 'k');
+    axis tight
+    ylim ([0 3000000])
+    xlim([0 30])
+    xlabel('Frequency (Hz)');
+    ylabel('Power (uV^2)');
+    title(subs {i_sub});
+end
+%bad subs 125, 
 
 
-
+%%
+close all
+for i_sub = 19
+    figure;
+    boundedline (freqs,power_spectra(:,i_sub,1), 0, 'r');
+    axis tight
+    xlim([0 30])
+    ylim ([0 8000000])
+    xlabel('Frequency (Hz)');
+    ylabel('Power (uV^2)');
+    title(subs {i_sub});
+    
+    figure;
+    boundedline (freqs,power_spectra(:,i_sub,2), 0, 'm');
+    axis tight
+    xlim([0 30])
+    ylim ([0 8000000])
+    xlabel('Frequency (Hz)');
+    ylabel('Power (uV^2)');
+    title(subs {i_sub});
+    
+    figure;
+    boundedline (freqs,power_spectra(:,i_sub,3), 0, 'g');
+    axis tight
+    xlim([0 30])
+    ylim ([0 8000000])
+    xlabel('Frequency (Hz)');
+    ylabel('Power (uV^2)');
+    title(subs {i_sub});
+    
+end

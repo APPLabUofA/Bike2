@@ -188,7 +188,7 @@ L(3) = plot(nan, nan, 'r');
 legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northeast')
 
 time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
-[h p ci stat] = ttest(squeeze(mean(erp_out(time_window,2,electrode,2,:),1)),squeeze(mean(erp_out(time_window,2,electrode,3,:),1)),.05,'both',1) 
+[h p ci stat] = ttest(squeeze(mean(erp_out(time_window,2,electrode,2,:),1)),squeeze(mean(erp_out(time_window,2,electrode,1,:),1)),.05,'both',1) 
 
 %Grand ERPs for targets and standards to find peak window
 %Targets on same axis
