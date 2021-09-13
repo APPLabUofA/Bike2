@@ -32,7 +32,6 @@ end
 eeglab redraw
 %%
 %subject erps
-electrode = 15;%this is PZ in this electrode map
 erp_out = [];
 for i_sub = 1:nsubs
     fprintf(['Subject ' num2str(i_sub)])
@@ -45,6 +44,7 @@ end
 
 %%
 %grand average plots + difference
+electrode = 15;%this is PZ in this electrode map
 erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
 figure('Color',[1 1 1]);
 for i_cond = 1:nconds
@@ -145,6 +145,8 @@ erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
 %%
 %%
 %Targets on same axis
+electrode = 13;%this is PZ in this electrode map
+
 figure;
 boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,1,:),5)), squeeze(std(erp_out(:,1,electrode,1,:),[],5))./sqrt(nsubs),'b',...
     EEG.times,squeeze(mean(erp_out(:,1,electrode,2,:),5)), squeeze(std(erp_out(:,1,electrode,2,:),[],5))./sqrt(nsubs),'g',...
@@ -161,9 +163,11 @@ ylabel('Voltage (uV)');
 L(1) = plot(nan, nan, 'b');
 L(2) = plot(nan, nan, 'g');
 L(3) = plot(nan, nan, 'r');
-legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northeast')
+legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northeast', 'Autoupdate', 'off')
+ fill([125;125;225;225],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+ %fill([225;225;325;325],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
 
-%ttest for targets 
+ %ttest for targets 
 time_window = find(EEG.times>125,1)-1:find(EEG.times>225,1)-2;
 [h p ci stat] = ttest(squeeze(mean(erp_out(time_window,1,electrode,1,:),1)),squeeze(mean(erp_out(time_window,1,electrode,3,:),1)),.05,'both',1) 
 
@@ -185,13 +189,17 @@ ylabel('Voltage (uV)');
 L(1) = plot(nan, nan, 'b');
 L(2) = plot(nan, nan, 'g');
 L(3) = plot(nan, nan, 'r');
-legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northeast')
+legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northeast', 'Autoupdate', 'off')
+ fill([125;125;225;225],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+% fill([225;225;325;325],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
+% 
+% time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
+ [h p ci stat] = ttest(squeeze(mean(erp_out(time_window,2,electrode,3,:),1)),squeeze(mean(erp_out(time_window,2,electrode,1,:),1)),.05,'both',1) 
 
-time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
-[h p ci stat] = ttest(squeeze(mean(erp_out(time_window,2,electrode,2,:),1)),squeeze(mean(erp_out(time_window,2,electrode,1,:),1)),.05,'both',1) 
+%%
 
+%%%%%%%%%%PEAK WINDOWS 
 %Grand ERPs for targets and standards to find peak window
-%Targets on same axis
 figure;
 boundedline(EEG.times,squeeze(mean(mean(erp_out(:,1,electrode,:,:),4),5)), squeeze(std(0))./sqrt(nsubs),'m'),...
     
@@ -215,12 +223,13 @@ line([0 0],[-2.5 8],'color','k');
 title('Standard Grand ERPs');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
-
+ fill([125;125;225;225],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+ fill([225;225;325;325],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
 
 
 %%
 %difference topographies
-time_window = find(EEG.times>100,1)-1:find(EEG.times>175,1)-2;
+time_window = find(EEG.times>125,1)-1:find(EEG.times>225,1)-2;
 figure('Color',[1 1 1]);
 for i_cond = 1:nconds
     subplot(1,nconds,i_cond);
@@ -235,7 +244,7 @@ for i_cond = 1:nconds
 end
 %%
 %Target & Standards topographies
-time_window = find(EEG.times>300,1)-1:find(EEG.times>600,1)-2;
+time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
 figure('Color',[1 1 1]);
 subplot(1,3,1);
 set(gca,'Color',[1 1 1]);
