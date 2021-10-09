@@ -4,9 +4,9 @@
 ccc
 %
 exp = 'Bike2';
-subs = {'100' '101'	'102'	'103'	'104'	'106'	'107'	'108'	'110'	'114'...
-    '115'	'116'	'117'	'118'	'119'	'120'	'121'	'123'	'126'	'127'...
-    '128'	'129'	'130'	'131'	'132'	'133'	'134'	'135'	'136'};
+subs = {'100' '101'	'102' '103'	'104' '106'	'107' '108' '110' '114'...
+        '115' '116' '117' '118' '119' '120' '121' '123' '125' '126'...
+        '127' '128' '129' '130' '131' '132'	'133' '134' '135' '136'};
 %subs = {'100'}; %to test on just one sub 
 % GOT RID OF 125 DUE TO NOISE 
 nsubs = length(subs); 
@@ -41,8 +41,8 @@ eeglab redraw
 electrode = 15;
 
 
-wavenumber = 12; %wavelet cycles
-freqs = [1:1:30]; %wavelet frequencies
+wavenumber = 6; %wavelet cycles
+freqs = [1:.5:30]; %wavelet frequencies
 power_out = [];
 i_count = 0;
 n_electrode = EEG.nbchan;
@@ -61,7 +61,7 @@ for i_sub = 1:nsubs
                 power(:,:,i_electrode,i_trial) = temp_power; %take log ?
             end
         end
-        power_out(:,:,:,i_sub,i_cond) = nanmean(power,4); %save the power data, averaging across trials
+        power_out(:,:,:,i_sub,i_cond) = mean(power,4); %save the power data, averaging across trials
     end
 end
 
