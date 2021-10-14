@@ -7,7 +7,7 @@ subs = {'100' '101' '102' '103' '104' '106' '107' '108' '110' '114'...
         '115' '116' '117' '118' '119' '120' '121' '122' '123' ...
         '126' '127' '129' '130' '131' '132' '133' '134' '135' '136'};
 
-%subs = {'109'}; %to test on just one sub
+subs = {'109'}; %to test on just one sub
 
 nsubs = length(subs);
 conds = {'sask'; '110st'; '83ave'};
@@ -17,7 +17,7 @@ Pathname = 'M:\Data\Bike_lanes\';
 
 [ALLEEG, EEG, CURRENTSET, ALLCOM] = eeglab;
 
-%%
+%
 for i_sub = 1:nsubs
     for i_cond = 1:nconds
         
@@ -30,18 +30,18 @@ for i_sub = 1:nsubs
     end
 end
 eeglab redraw
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%subject erps
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+subject erps
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 erp_out = [];
 for i_sub = 1:nsubs
     fprintf(['Subject ' num2str(i_sub)])
     for i_cond = 1:nconds
-        %average over trials (3rd dimension)
+        average over trials (3rd dimension)
         erp_out(:,1,:,i_cond,i_sub) = mean(ALLEEG(1+ 2*((i_sub-1)*nconds+(i_cond-1))).data,3)'; %Targets
         erp_out(:,2,:,i_cond,i_sub) = mean(ALLEEG(2+ 2*((i_sub-1)*nconds+(i_cond-1))).data,3)'; %standards
     end
@@ -176,7 +176,7 @@ end
 %
 % difference waves on same axis
 %
-% MANUSCRIPT: DIFFERENCE-WAVES P3 AND MMN/N2b
+% MANUSCRIPT: DIFFERENCE-WAVES P3 
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -242,7 +242,7 @@ erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Targets on same axis
-electrode = 15;
+electrode = 13;
 
 figure;
 boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,1,:),5)), squeeze(std(erp_out(:,1,electrode,1,:),[],5))./sqrt(nsubs),'b',...
@@ -335,14 +335,14 @@ legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northeast', 'Aut
 %              STANDARD N1 ERP VARIABLES FOR JASP
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-electrode = 13; 
-time_window = find(EEG.times>2,1)-1:find(EEG.times>225,1)-2;
+electrode = 15; 
+time_window = find(EEG.times>125,1)-1:find(EEG.times>200,1)-2;
 N1_stan_sask = squeeze(mean(erp_out(time_window,2,electrode,1,:),1));
 N1_stan_110 = squeeze(mean(erp_out(time_window,2,electrode,2,:),1)); %%% keep changing these.....
 N1_stan_83 = squeeze(mean(erp_out(time_window,2,electrode,3,:),1));
 N1_stan_conds = [N1_stan_sask, N1_stan_110, N1_stan_83];
-%writematrix(N1_targ_conds, 'Fz_N1_targ_conds(125_200).csv')
-writematrix(N1_stan_conds, 'Pz_N1_stan_conds(125_225).csv')
+%writematrix(N1_stan_conds, 'Fz_N1_stan_conds.csv')
+writematrix(N1_stan_conds, 'Pz_N1_stan_conds.csv')
 clear time_window;
 %% 
 % time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
@@ -353,14 +353,14 @@ clear time_window;
 %              STANDARD P2 ERP VARIABLES FOR JASP
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-electrode = 13; 
-time_window = find(EEG.times>2,1)-1:find(EEG.times>225,1)-2;
-P2_stan_sask = squeeze(mean(erp_out(time_window,1,electrode,1,:),1))
-P2_stan_110 = squeeze(mean(erp_out(time_window,1,electrode,2,:),1));
-P2_stan_83 = squeeze(mean(erp_out(time_window,1,electrode,3,:),1));
-P2_stan_conds = [N1_targ_sask, N1_targ_110, N1_targ_83];
-%writematrix(N1_targ_conds, 'Fz_N1_targ_conds(125_200).csv')
-writematrix(N1_targ_conds, 'Pz_P2_stan_conds(125_225).csv')
+electrode = 15; 
+time_window = find(EEG.times>200,1)-1:find(EEG.times>300,1)-2;
+P2_stan_sask = squeeze(mean(erp_out(time_window,2,electrode,1,:),1));
+P2_stan_110 = squeeze(mean(erp_out(time_window,2,electrode,2,:),1));
+P2_stan_83 = squeeze(mean(erp_out(time_window,2,electrode,3,:),1));
+P2_stan_conds = [P2_stan_sask, P2_stan_110, P2_stan_83];
+%writematrix(P2_stan_conds, 'Fz_P2_stan_conds.csv')
+writematrix(P2_stan_conds, 'Pz_P2_stan_conds.csv')
 clear time_window;
 
 
