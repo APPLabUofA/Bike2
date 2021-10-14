@@ -12,7 +12,7 @@ nsubs = length(subs);
 conds = {'sask'; '110st'; '83ave'};
 %preferred, clockwise - non-preffered, CCW
 nconds = length(conds);
-Pathname = 'M:\Data\Bike_Mazumder\';
+Pathname = 'M:\Data\Bike_Lanes\';
 
 % if ~exist([Pathname 'segments\'])
 %     mkdir([Pathname 'segments\']);
