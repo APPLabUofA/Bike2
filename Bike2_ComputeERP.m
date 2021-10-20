@@ -366,8 +366,16 @@ clear time_window;
 
 
 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%                MANUSCRIPT TOPOGRAPHIES
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 %difference topographies
-time_window = find(EEG.times>125,1)-1:find(EEG.times>225,1)-2;
+erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
+time_window = find(EEG.times>300,1)-1:find(EEG.times>450,1)-2;
 figure('Color',[1 1 1]);
 for i_cond = 1:nconds
     subplot(1,nconds,i_cond);
@@ -382,7 +390,7 @@ for i_cond = 1:nconds
 end
 %%
 %Target & Standards topographies
-time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
+time_window = find(EEG.times>125,1)-1:find(EEG.times>200,1)-2;
 figure('Color',[1 1 1]);
 subplot(1,3,1);
 set(gca,'Color',[1 1 1]);
@@ -439,64 +447,14 @@ topoplot(temp6,'M:\Analysis\Skateboard\Skate_Vamp_Active_16.ced', 'whitebk','on'
 title('83 Avenue');
 t = colorbar('peer',gca);
 set(get(t,'ylabel'),'String', 'Standards');
-%%
-%SINGLE ERPS FOR INDIVIDUAL COPYING
-
-for i_cond = 1:nconds
-    switch i_cond
-        case 1
-            colour = 'b';
-        case 2
-            colour = 'g';
-        case 3
-            colour = 'r';
-    end
-    
-    figure;
-    boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(erp_out(:,1,electrode,i_cond,:),[],5))./sqrt(nsubs),colour,...
-        EEG.times,squeeze(mean(erp_out(:,2,electrode,i_cond,:),5)),squeeze(std(erp_out(:,2,electrode,i_cond,:),[],5))./sqrt(nsubs),'k');
-    set(gca,'Color',[1 1 1]);
-    set(gca,'YDir','reverse');
-    if i_cond == 2 || 3
-        legend('Targets','Standards','Location','NorthEast');
-    elseif i_cond == 1
-        legend('Targets','Standards','Location','NorthEast');
-    end
-    axis tight; ylim([-8 12]);
-    line([-200 1000],[0 0],'color','k');
-    line([0 0],[-2.5 8],'color','k');
-    title(conds{i_cond});
-    xlabel('Time (ms)');
-    ylabel('Voltage (uV)');
-end
-%%
-
-% for i_set = 1:48; trial_count(i_set) = ALLEEG(i_set).trials; end
-% trial_count = reshape(trial_count,[2,3,8]);
-% min(trial_count,[],3)
-% mean(trial_count,3)
-% max(trial_count,[],3)
-%
-% %mean and sd
-% mean(mean(erp_diff_out(time_window,7,1:3,:),1),4)
-% std(mean(erp_diff_out(time_window,7,1:3,:),1),[],4)
-%
-%
-%
-% ttest of each condition
-[h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,7,1,:),1)),0,.05,'right',1)
-[h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,7,2,:),1)),0,.05,'right',1)
-[h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,7,3,:),1)),0,.05,'right',1)
-[h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,7,4,:),1)),0,.05,'right',1)
-
-
-
-eeglab redraw
 
 
 %%
-% EXPLORATORY ANALYSES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% EXPLORATORY ANALYSES 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 %individual subs
 %
@@ -514,3 +472,61 @@ eeglab redraw
 %         xlabel('Time (ms)');
 %         ylabel('Voltage (uV)');
 %  end
+
+%%
+%%
+% %SINGLE ERPS FOR INDIVIDUAL COPYING
+% 
+% for i_cond = 1:nconds
+%     switch i_cond
+%         case 1
+%             colour = 'b';
+%         case 2
+%             colour = 'g';
+%         case 3
+%             colour = 'r';
+%     end
+%     
+%     figure;
+%     boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(erp_out(:,1,electrode,i_cond,:),[],5))./sqrt(nsubs),colour,...
+%         EEG.times,squeeze(mean(erp_out(:,2,electrode,i_cond,:),5)),squeeze(std(erp_out(:,2,electrode,i_cond,:),[],5))./sqrt(nsubs),'k');
+%     set(gca,'Color',[1 1 1]);
+%     set(gca,'YDir','reverse');
+%     if i_cond == 2 || 3
+%         legend('Targets','Standards','Location','NorthEast');
+%     elseif i_cond == 1
+%         legend('Targets','Standards','Location','NorthEast');
+%     end
+%     axis tight; ylim([-8 12]);
+%     line([-200 1000],[0 0],'color','k');
+%     line([0 0],[-2.5 8],'color','k');
+%     title(conds{i_cond});
+%     xlabel('Time (ms)');
+%     ylabel('Voltage (uV)');
+% end
+
+%%
+%%
+
+% for i_set = 1:48; trial_count(i_set) = ALLEEG(i_set).trials; end
+% trial_count = reshape(trial_count,[2,3,8]);
+% min(trial_count,[],3)
+% mean(trial_count,3)
+% max(trial_count,[],3)
+%
+% %mean and sd
+% mean(mean(erp_diff_out(time_window,7,1:3,:),1),4)
+% std(mean(erp_diff_out(time_window,7,1:3,:),1),[],4)
+%
+%
+%
+% ttest of each condition
+% [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,7,1,:),1)),0,.05,'right',1)
+% [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,7,2,:),1)),0,.05,'right',1)
+% [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,7,3,:),1)),0,.05,'right',1)
+% [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,7,4,:),1)),0,.05,'right',1)
+% 
+% 
+% 
+% eeglab redraw
+
