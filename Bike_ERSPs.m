@@ -63,6 +63,7 @@ dum1 = [];
 dum2 = [];
 timesout = 200;
 analfreq = [4 20];
+pratio = 8; %not using it for now. DR
 %
 %-------------------------------------------------------------------------
 %% TF Analysis
@@ -97,7 +98,7 @@ for i_sub = 1:nsubs
                     pop_newtimef(EEG, 1, i_chan, tf_epochslim*1000, tf_cycles, 'topovec', i_chan,...
                     'elocs', EEG.chanlocs, 'chaninfo', EEG.chaninfo, 'baseline', baseln,...
                     'freqs', analfreq, 'plotersp', elab_plot, 'plotitc', elab_plot,...
-                    'padratio', 8, 'timesout', timesout);
+                    'padratio', pratio, 'timesout', timesout);
             end
             
         elseif perms == 2 % Load targets data
@@ -119,7 +120,7 @@ for i_sub = 1:nsubs
                     pop_newtimef(EEG, 1, i_chan, tf_epochslim*1000, tf_cycles, 'topovec', i_chan,...
                     'elocs', EEG.chanlocs, 'chaninfo', EEG.chaninfo, 'baseline', baseln,...
                     'freqs', analfreq, 'plotphase', 'Off', 'plotersp', elab_plot,...
-                    'plotitc', elab_plot, 'padratio', 8, 'timesout', timesout);
+                    'plotitc', elab_plot, 'padratio', pratio, 'timesout', timesout);
             end
             
         elseif perms == 3
@@ -142,7 +143,7 @@ for i_sub = 1:nsubs
                     pop_newtimef(EEG, 1, i_chan, tf_epochslim*1000, tf_cycles, 'topovec', i_chan,...
                     'elocs', EEG.chanlocs, 'chaninfo', EEG.chaninfo, 'baseline', baseln,...
                     'freqs', analfreq, 'plotphase', 'Off', 'plotersp', elab_plot,...
-                    'plotitc', elab_plot, 'padratio', 8, 'timesout', timesout);
+                    'plotitc', elab_plot, 'padratio', pratio, 'timesout', timesout);
             end
             
             % Load targets data
@@ -163,7 +164,7 @@ for i_sub = 1:nsubs
                     pop_newtimef(EEG, 1, i_chan, tf_epochslim*1000, tf_cycles, 'topovec', i_chan,...
                     'elocs', EEG.chanlocs, 'chaninfo', EEG.chaninfo, 'baseline', baseln,...
                     'freqs', analfreq, 'plotphase', 'Off', 'plotersp', elab_plot,...
-                    'plotitc', elab_plot, 'padratio', 8, 'timesout', timesout);
+                    'plotitc', elab_plot, 'padratio', pratio, 'timesout', timesout);
             end
             
         end     
@@ -174,30 +175,18 @@ end
 
 eeglab redraw
 
-% -------------------------------------------------------------------------
-% /////////////////////////////////////////////////////////////////////////
-% -------------------------------------------------------------------------
-%% Plotting functions
-
-%  Bike_ERSP_Plot(ALLEEG, 1, EEG, elec_names, electrode, electrode_loc,...
-%      ersp, exp, Filename, freqs, itc, Pathname, perms, powbase, subs, times,...
-%      trialevent)
-%  
-% Bike_ERSP_Plot(freqs,ersp)
-
-% -------------------------------------------------------------------------
-% /////////////////////////////////////////////////////////////////////////
-% -----------------------------------------------------------------------
-
+%
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%
-%       PLOTTING SPECTRA WITHOUT CALLING THE FUNCTION
+% PLOTTING SPECTRA WITHOUT CALLING THE FUNCTION
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%     ERSP plots averaged over subjects for each channels
+
 CLim = [-1.5 1.5];
+electrode = [13 15];
 
 for i_event = 1:length(trialevent)
 
@@ -210,7 +199,7 @@ for i_event = 1:length(trialevent)
         ersp_83 = squeeze(mean(ersp(:,3,i_event,ch_ersp,:,:),1));
 
         figure; 
-        colormap('jet')
+        colormap(redblue)
 
         % Subplot 1: Sask
         subplot(3,1,1); 
@@ -250,40 +239,38 @@ end
 clear i_event
 
 %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %PLOTS USING DIFFERENCE ERSPS %continue here
 %
+%            TARGETS(2) - STANDARDS(1) 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
-%time_window = find(EEG.times>-200,1)-1:find(EEG.times>1000,1)-2;
 
-%averaging ERSP windows and subtracting targets-standards
-% (participants x conditions x events x electrodes x frequencies x timepoints)
+electrode = 1; %loaded 2 electrodes only. 2 = Pz
 
-ersp_dif = squeeze(ersp(:,:,2,:,:,:)-ersp(:,:,1,:,:,:));
-ersp_dif_sask = squeeze(mean(ersp_dif(:,1,:,:,:),1));
-ersp_dif_110 = squeeze(mean(ersp_dif(:,2,:,:,:),1));
-ersp_dif_83 = squeeze(mean(ersp_dif(:,3,:,:,:),1));
-
-% % skate script variables. keeping here for temporary reference. DR. 
-% % ersp_stand  =  squeeze(mean(mean(ersp(:,[1,2],1,2,:,:),1),2));
-% % pref_ersp_targ  =  squeeze(mean(mean(ersp(:,[1,2],2,2,:,:),1),2));
-% % pref_ersp_dif = squeeze(pref_ersp_targ-pref_ersp_stand);
-% % 
-% % npref_ersp_stand = squeeze(mean(mean(ersp(:,[3,4],1,2,:,:),1),2));
-% % npref_ersp_targ = squeeze(mean(mean(ersp(:,[3,4],2,2,:,:),1),2));
-% % npref_ersp_dif = squeeze(npref_ersp_targ-npref_ersp_stand);
-
+%(participants x conditions x events x electrodes x frequencies x timepoints)
+%standards
+stan_sask = squeeze(mean(ersp(:,1,1,electrode,:,:),1));
+stan_110 = squeeze(mean(ersp(:,2,1,electrode,:,:),1));
+stan_83 = squeeze(mean(ersp(:,3,1,electrode,:,:),1));
+%targets
+targ_sask = squeeze(mean(ersp(:,1,2,electrode,:,:),1));
+targ_110 = squeeze(mean(ersp(:,2,2,electrode,:,:),1));
+targ_83 = squeeze(mean(ersp(:,3,2,electrode,:,:),1));
+%targets-standards
+diff_ersp_sask = targ_sask - stan_sask;
+diff_ersp_110 = targ_110 - stan_110;
+diff_ersp_83 = targ_83 - stan_83;
 
 CLim = [-1.5 1.5];
 figure;
-colormap('jet')
+colormap('redblue')
 
 % Subplot 1: sask
 subplot(3,1,1);
-imagesc(times,freqs,ersp_dif_sask,CLim);
-title('ERSP:Stand-Targ, Sask Dr');
+imagesc(times,freqs,diff_ersp_sask,CLim);
+title('ERSP:Targ-Stan, Sask Dr');
 set(gca,'Ydir','Normal')
 line([0 0],[min(freqs) max(freqs)],'Color','m','LineStyle','--','LineWidth',1.5)
 line([min(times) max(times)],[8 8],'Color','k','LineStyle','--','LineWidth',.1)
@@ -292,73 +279,27 @@ ylabel('Freq (Hz)');
 colorbar
 % Subplot 2: 110
 subplot(3,1,2);
-imagesc(times,freqs,ersp_dif_110,CLim);
-title('ERSP:Stand-Targ, 110 St');
+imagesc(times,freqs,diff_ersp_110,CLim);
+title('ERSP:Targ-Stan, 110 St');
 set(gca,'Ydir','Normal')
 line([0 0],[min(freqs) max(freqs)],'Color','m','LineStyle','--','LineWidth',1.5)
 line([min(times) max(times)],[8 8],'Color','k','LineStyle','--','LineWidth',.1)
 line([min(times) max(times)],[12 12],'Color','k','LineStyle','--','LineWidth',.1)
 ylabel('Freq (Hz)');
 colorbar
-% Subplot 1: out-in
+% Subplot 3: 83 ave
 subplot(3,1,3);
-imagesc(times,freqs,pref_ersp_dif,CLim);
-title('ERSP:Targets-Standards, Preferred');
+imagesc(times,freqs,diff_ersp_83,CLim);
+title('ERSP:Targ-Stand, 83 Ave');
 set(gca,'Ydir','Normal')
 line([0 0],[min(freqs) max(freqs)],'Color','m','LineStyle','--','LineWidth',1.5)
 line([min(times) max(times)],[8 8],'Color','k','LineStyle','--','LineWidth',.1)
 line([min(times) max(times)],[12 12],'Color','k','LineStyle','--','LineWidth',.1)
 ylabel('Freq (Hz)'); xlabel('Time (ms)');
 colorbar
+clear line
+clear electrode
 
-%NON-PREF
-CLim = [-1.5 1.5];
-figure;
-colormap('jet')
-
-% Subplot 1: pref
-subplot(3,1,1);
-imagesc(times,freqs,npref_ersp_stand,CLim);
-title('ERSP:Standards, Non Preferred @ Pz');
-set(gca,'Ydir','Normal')
-line([0 0],[min(freqs) max(freqs)],'Color','m','LineStyle','--','LineWidth',1.5)
-line([min(times) max(times)],[8 8],'Color','k','LineStyle','--','LineWidth',.1)
-line([min(times) max(times)],[12 12],'Color','k','LineStyle','--','LineWidth',.1)
-ylabel('Freq (Hz)');
-colorbar
-% Subplot 1: in
-subplot(3,1,2);
-imagesc(times,freqs,npref_ersp_targ,CLim);
-title('ERSP:Targets, Non Preferred');
-set(gca,'Ydir','Normal')
-line([0 0],[min(freqs) max(freqs)],'Color','m','LineStyle','--','LineWidth',1.5)
-line([min(times) max(times)],[8 8],'Color','k','LineStyle','--','LineWidth',.1)
-line([min(times) max(times)],[12 12],'Color','k','LineStyle','--','LineWidth',.1)
-ylabel('Freq (Hz)');
-colorbar
-% Subplot 1: out-in
-subplot(3,1,3);
-imagesc(times,freqs,npref_ersp_dif,CLim);
-title('ERSP:Targets-Standards, Non Preferred');
-set(gca,'Ydir','Normal')
-line([0 0],[min(freqs) max(freqs)],'Color','m','LineStyle','--','LineWidth',1.5)
-line([min(times) max(times)],[8 8],'Color','k','LineStyle','--','LineWidth',.1)
-line([min(times) max(times)],[12 12],'Color','k','LineStyle','--','LineWidth',.1)
-ylabel('Freq (Hz)'); xlabel('Time (ms)');
-colorbar
-
-%preferred unpreferred difference wave 
-pnp_grand_diff_pz = squeeze(pref_ersp_dif-npref_ersp_dif);
-figure
-subplot(3,1,1);
-imagesc(times,freqs,pnp_grand_diff_pz,CLim);
-title('ERSP:Preferred-Unpreferred, Target-Standards');
-set(gca,'Ydir','Normal')
-line([0 0],[min(freqs) max(freqs)],'Color','m','LineStyle','--','LineWidth',1.5)
-line([min(times) max(times)],[8 8],'Color','k','LineStyle','--','LineWidth',.1)
-line([min(times) max(times)],[12 12],'Color','k','LineStyle','--','LineWidth',.1)
-ylabel('Freq (Hz)'); xlabel('Time (ms)');
-colorbar
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
