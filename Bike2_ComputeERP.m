@@ -47,6 +47,7 @@ for i_sub = 1:nsubs
     end
 end
 
+
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -68,7 +69,7 @@ line([0 0],[-2.5 8],'color','k');
 title('Difference-Wave Grand ERPs');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
-fill([300;300;450;450],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+fill([355;355;505;505],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
 clear electrode;
 
 % MMN/N2b % NOT INCLUDING IN MANUSCRIPT UNLESS SIGNIFICANT
@@ -97,12 +98,11 @@ line([0 0],[-2.5 8],'color','k');
 title('Target Grand ERPs');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
-fill([125;125;200;200],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
-fill([200;200;300;300],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
+ fill([118;118;218;218],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+ fill([218;218;318;318],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
 clear electrode;
 
 % N1 + P2 PEAK/TIME WINDOW - STANDARDS
-
 electrode = 13;
 figure;
 boundedline(EEG.times,squeeze(mean(mean(erp_out(:,2,electrode,:,:),4),5)), squeeze(std(0))./sqrt(nsubs),'m'),...
@@ -114,8 +114,8 @@ line([0 0],[-2.5 8],'color','k');
 title('Standard Grand ERPs');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
-fill([125;125;200;200],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
-fill([200;200;300;300],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
+ fill([118;118;218;218],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+ fill([218;218;318;318],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
 clear electrode;
 
 
@@ -127,7 +127,7 @@ clear electrode;
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-electrode = 13;
+electrode = 15;
 erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
 figure('Color',[1 1 1]);
 for i_cond = 1:nconds
@@ -177,7 +177,7 @@ end
 %
 % difference waves on same axis
 %
-% MANUSCRIPT: DIFFERENCE-WAVES P3 AND MMN/N2b
+% MANUSCRIPT: DIFFERENCE-WAVES P3
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -201,7 +201,8 @@ L(1) = plot(nan, nan, 'b');
 L(2) = plot(nan, nan, 'g');
 L(3) = plot(nan, nan, 'r');
 legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northwest', 'Autoupdate', 'off')
-fill([300;300;450;450],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+% fill([300;300;450;450],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+fill([355;355;505;505],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
 clear electrode;
 
 %%
@@ -214,7 +215,7 @@ clear electrode;
 % TARGET VARIABLES FOR JASP
 electrode = 15;
 erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
-time_window = find(EEG.times>300,1)-1:find(EEG.times>450,1)-2;
+time_window = find(EEG.times>355,1)-1:find(EEG.times>505,1)-2;
 P3_diffs = [squeeze(mean(erp_diff_out(time_window,electrode,1,:),1)),...
     squeeze(mean(erp_diff_out(time_window,electrode,2,:),1)),...
     squeeze(mean(erp_diff_out(time_window,electrode,3,:),1))];
@@ -262,8 +263,10 @@ L(1) = plot(nan, nan, 'b');
 L(2) = plot(nan, nan, 'g');
 L(3) = plot(nan, nan, 'r');
 legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northeast', 'Autoupdate', 'off')
-fill([125;125;200;200],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
-fill([200;200;300;300],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
+% fill([125;125;200;200],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+% fill([200;200;300;300],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
+fill([118;118;218;218],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+fill([218;218;318;318],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -272,7 +275,7 @@ fill([200;200;300;300],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Line
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ttest for targets
 electrode = 15; %adjust the electrode number accordingly btn Fz and Pz
-time_window = find(EEG.times>125,1)-1:find(EEG.times>200,1)-2;
+time_window = find(EEG.times>118,1)-1:find(EEG.times>218,1)-2;
 %[h p ci stat] = ttest(squeeze(mean(erp_out(time_window,1,electrode,1,:),1)),squeeze(mean(erp_out(time_window,1,electrode,3,:),1)),.05,'both',1)
 
 % TARGET VARIABLES FOR JASP
@@ -292,7 +295,7 @@ clear time_window;
 
 
 electrode = 15; %adjust the electrode number accordingly btn Fz and Pz
-time_window = find(EEG.times>200,1)-1:find(EEG.times>300,1)-2;
+time_window = find(EEG.times>218,1)-1:find(EEG.times>318,1)-2;
 P2_targ_sask = squeeze(mean(erp_out(time_window,1,electrode,1,:),1));
 P2_targ_110 = squeeze(mean(erp_out(time_window,1,electrode,2,:),1));
 P2_targ_83 = squeeze(mean(erp_out(time_window,1,electrode,3,:),1));
@@ -310,7 +313,7 @@ clear time_window;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Standards on same axis
-
+electrode = 15;
 figure;
 boundedline(EEG.times,squeeze(mean(erp_out(:,2,electrode,1,:),5)), squeeze(std(erp_out(:,2,electrode,1,:),[],5))./sqrt(nsubs),'b',...
     EEG.times,squeeze(mean(erp_out(:,2,electrode,2,:),5)), squeeze(std(erp_out(:,2,electrode,2,:),[],5))./sqrt(nsubs),'g', ...
@@ -328,8 +331,10 @@ L(1) = plot(nan, nan, 'b');
 L(2) = plot(nan, nan, 'g');
 L(3) = plot(nan, nan, 'r');
 legend(L, {'Sask Drive', '110 Street', '83 Avenue'},'Location','northeast', 'Autoupdate', 'off')
-fill([125;125;200;200],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
-fill([200;200;300;300],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
+% fill([125;125;200;200],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+% fill([200;200;300;300],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
+fill([118;118;218;218],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+fill([218;218;318;318],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -337,7 +342,7 @@ fill([200;200;300;300],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Line
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 electrode = 15;
-time_window = find(EEG.times>125,1)-1:find(EEG.times>200,1)-2;
+time_window = find(EEG.times>118,1)-1:find(EEG.times>218,1)-2;
 N1_stan_sask = squeeze(mean(erp_out(time_window,2,electrode,1,:),1));
 N1_stan_110 = squeeze(mean(erp_out(time_window,2,electrode,2,:),1)); 
 N1_stan_83 = squeeze(mean(erp_out(time_window,2,electrode,3,:),1));
@@ -345,6 +350,7 @@ N1_stan_conds = [N1_stan_sask, N1_stan_110, N1_stan_83];
 %writematrix(N1_targ_conds, 'Fz_N1_standards.csv')
 writematrix(N1_stan_conds, 'Pz_N1_standards.csv')
 clear time_window;
+clear electrode;
 %%
 % time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
 %[h p ci stat] = ttest(squeeze(mean(erp_out(time_window,2,electrode,3,:),1)),squeeze(mean(erp_out(time_window,2,electrode,1,:),1)),.05,'both',1)
@@ -355,7 +361,7 @@ clear time_window;
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 electrode = 15;
-time_window = find(EEG.times>200,1)-1:find(EEG.times>300,1)-2;
+time_window = find(EEG.times>218,1)-1:find(EEG.times>318,1)-2;
 P2_stan_sask = squeeze(mean(erp_out(time_window,2,electrode,1,:),1));
 P2_stan_110 = squeeze(mean(erp_out(time_window,2,electrode,2,:),1));
 P2_stan_83 = squeeze(mean(erp_out(time_window,2,electrode,3,:),1));
