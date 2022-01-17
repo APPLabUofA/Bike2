@@ -4,11 +4,11 @@
 ccc
 %
 exp = 'Bike2';
-subs = {'100' '101'	'102' '103'	'104' '106'	'107' '108' '110' '114'...
-    '115' '116' '117' '118' '119' '120' '121' '123' '126' '127'...
-    '128' '129' '130' '131' '132' '133' '134' '135' '136'};
-%subs = {'100'}; %to test on just one sub
-
+subs = {'100' '101' '102' '103' '104' '106' '107' '108' '110'... 
+        '113' '114' '115' '116' '117' '118' '119' '120' '121'...
+        '122' '123' '126' '127' '129' '130' '131' '132' '133'...
+        '134' '135' '136'};
+    
 nsubs = length(subs);
 conds = {'sask' '110st' '83ave'};
 conds_lab = {'Sask Drive Lane'; '110 Street Lane'; '83 Avenue Lane'};
@@ -27,18 +27,11 @@ for i_sub = 1:nsubs
 end
 eeglab redraw
 %%
-%1:2 -->   F3:F4
-%3:4 -->   T7:T8
-%5:6 -->   C3:C4
-%7:8 -->   P7:P8
-%9:10  --> P3:P4
-%11:12 --> O1:O2
 
-% left_electrode = 5;
-% right_electrode = 6;
 electrode = 15;
+% electrode = [1:16];
 
-wavenumber = 6; %wavelet cycles
+wavenumber = 9; %wavelet cycles
 freqs = [1:.5:30]; %wavelet frequencies
 power_out = [];
 i_count = 0;
@@ -55,7 +48,7 @@ for i_sub = 1:nsubs
             for i_electrode = 1:length([electrode]) %pairs of contralateral electrodes
                 tempdata = ALLEEG(i_count).data(electrode(i_electrode), :,i_trial) ;
                 [temp_power temp_times temp_phase] = BOSC_tf(tempdata,freqs,EEG.srate,wavenumber);
-                power(:,:,i_electrode,i_trial) = temp_power; %take log ?
+                power(:,:,i_electrode,i_trial) = log(temp_power); %take log ?
             end
         end
         power_out(:,:,:,i_sub,i_cond) = mean(power,4); %save the power data, averaging across trials
@@ -84,7 +77,20 @@ xlim([0 30])
 ylim ([0 3000000])
 xlabel('Frequency (Hz)');
 ylabel('Power (uV^2)');
-title('Power (Left - Right)');
+title('EEG Power Spectra');
+legend(conds_lab,'Location','NorthEast');
+%%
+%log EEG spectra plot
+figure;
+boundedline(freqs,power_spectra_mean(:,1),power_spectra_se(:,1),'r',...
+    freqs,power_spectra_mean(:,2),power_spectra_se(:,2),'b',...
+    freqs,power_spectra_mean(:,3),power_spectra_se(:,3),'g');
+axis tight
+xlim([0 30])
+%ylim ([0 3000000])
+xlabel('Frequency (Hz)');
+ylabel('Power (uV^2)');
+title('(Log EEG Power Spectra');
 legend(conds_lab,'Location','NorthEast');
 %%
 %JASP STATS CODE 
@@ -218,3 +224,34 @@ writematrix(jasp_alpha, 'bike_alpha_conds.csv')
 %     title(subs {i_sub});
 %     
 % end
+
+%%
+%AVG BY COND LOGGED
+
+for i_sub = 1:nsubs
+    figure;
+    subplot (1,2,1)
+    boundedline (freqs,mean(power_spectra(:,i_sub,:),3), 0, 'r');
+    axis tight
+    xlim([0 30])
+    %     ylim ([0 8000000])
+    xlabel('Frequency (Hz)');
+    ylabel('Power (uV^2)');
+    title(subs {i_sub});
+    fill([8;8;12;12],[8;20;20;8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+end
+
+%averaged by condition NO LOG
+close all
+for i_sub = 1:nsubs
+    figure;
+    subplot (1,2,1)
+    boundedline (freqs,mean(power_spectra(:,i_sub,1),3), 0, 'r');
+    axis tight
+    xlim([0 30])
+     ylim ([0 8000000])
+    xlabel('Frequency (Hz)');
+    ylabel('Power (uV^2)');
+    title(subs {i_sub});
+    fill([8;8;12;12],[0;8000000;8000000;0],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+end

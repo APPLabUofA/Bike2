@@ -2,9 +2,10 @@ clear all
 close all
 
 exp = 'bike2';
-subs = {'100' '101' '102' '103' '104' '106' '107' '108' '110' '114'...
-    '115' '116' '117' '118' '119' '120' '121' '122' '123' ...
-    '126' '127' '129' '130' '131' '132' '133' '134' '135' '136'};
+subs = {'100' '101' '102'  '104' '106'  '108' '110'... 
+        '114' '115' '116' '117' '118' '120' '121'...
+        '122'  '126' '127' '129' '130' '131' '132' '133'...
+         '135' '136'};
 
 %subs = {'109'}; %to test on just one sub
 
@@ -21,9 +22,9 @@ for i_sub = 1:nsubs
     for i_cond = 1:nconds
         
         Filename = [subs{i_sub} '_' exp '_' conds{i_cond}];
-        EEG = pop_loadset('filename',[Filename '_Corrected_Target.set'],'filepath','M:\Data\Bike_lanes\segments\');
+        EEG = pop_loadset('filename',[Filename '_Targets.set'],'filepath','M:\Data\Bike_lanes\segments_JK\');
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
-        EEG = pop_loadset('filename',[Filename '_Corrected_Standard.set'],'filepath','M:\Data\Bike_lanes\segments');
+        EEG = pop_loadset('filename',[Filename '_Standards.set'],'filepath','M:\Data\Bike_lanes\segments_JK');
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
         
     end

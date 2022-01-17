@@ -2,18 +2,12 @@ clear all
 close all
 ccc
 
-exp = 'bike2';
-subs = {'100' '101' '102' '103' '104' '106' '107' '108' '110' '114'...
-    '115' '116' '117' '118' '119' '120' '121' '122' '123' ...
-    '126' '127' '129' '130' '131' '132' '133' '134' '135' '136'}; 
-%     OG SAMPLE      SAMPLE THAT MISMATCHES 
-
-%METE AQUI EL SAMPLE NUEVO CON 113
-subs = {'100' '101' '102' '103' '104' '106' '107' '108' '110'... 
-        '113' '114' '115' '116' '117' '118' '119' '120' '121'...
-        '122' '123' '126' '127' '129' '130' '131' '132' '133'...
-        '134' '135' '136'};
-
+exp = 'Bike2';
+subs = {'100' '101' '102'  '104' '106'  '108' '110'... 
+        '114' '115' '116' '117' '118' '120' '121'...
+        '122'  '126' '127' '129' '130' '131' '132' '133'...
+         '135' '136'}; %new sample
+     
 nsubs = length(subs);
 conds = {'sask'; '110st'; '83ave'};
 conds_lab = {'Sask Drive'; '110 Street'; '83 Avenue'};
@@ -27,9 +21,11 @@ for i_sub = 1:nsubs
     for i_cond = 1:nconds
         
         Filename = [subs{i_sub} '_' exp '_' conds{i_cond}];
-        EEG = pop_loadset('filename',[Filename '_Corrected_Target.set'],'filepath','M:\Data\Bike_lanes\segments\');
+        EEG = pop_loadset('filename',[Filename '_Targets.set'],'filepath','M:\Data\Bike_lanes\segments_JK\');
+%         EEG = pop_loadset('filename',[Filename '_Targets.set'],'filepath','M:\Data\Bike_lanes\segments_JK_2\');
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
-        EEG = pop_loadset('filename',[Filename '_Corrected_Standard.set'],'filepath','M:\Data\Bike_lanes\segments');
+        EEG = pop_loadset('filename',[Filename '_Standards.set'],'filepath','M:\Data\Bike_lanes\segments_JK');
+%         EEG = pop_loadset('filename',[Filename '_Standards.set'],'filepath','M:\Data\Bike_lanes\segments_JK_2');
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
         
     end
@@ -51,79 +47,6 @@ for i_sub = 1:nsubs
         erp_out(:,2,:,i_cond,i_sub) = mean(ALLEEG(2+ 2*((i_sub-1)*nconds+(i_cond-1))).data,3)'; %standards
     end
 end
-
-
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%%% TIME WINDOW + PEAK AVERAGES TO DETERMINE STATS WINDOW.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% P3 PEAK (DIFFERENCE-WAVES)
-%trying out on difference
-erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
-electrode = 15;
-figure;
-boundedline(EEG.times,squeeze(mean(mean(erp_diff_out(:,electrode,:,:),4),3)), squeeze(std(0))./sqrt(nsubs),'m'),...
-    set(gca,'Color',[1 1 1]);
-set(gca,'YDir','reverse');
-axis tight; ylim([-8 12]);
-line([-200 1000],[0 0],'color','k');
-line([0 0],[-2.5 8],'color','k');
-title('Difference-Wave Grand ERPs');
-xlabel('Time (ms)');
-ylabel('Voltage (uV)');
-fill([355;355;505;505],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
-clear electrode;
-
-% MMN/N2b % NOT INCLUDING IN MANUSCRIPT UNLESS SIGNIFICANT
-% electrode = 13;
-% figure;
-% boundedline(EEG.times,squeeze(mean(mean(erp_diff_out(:,electrode,:,:),4),3)), squeeze(std(0))./sqrt(nsubs),'m'),...
-% set(gca,'Color',[1 1 1]);
-% set(gca,'YDir','reverse');
-% axis tight; ylim([-12 16]);
-% line([-200 1000],[0 0],'color','k');
-% line([0 0],[-2.5 8],'color','k');
-% title('Difference-Wave Grand ERPs');
-% xlabel('Time (ms)');
-% ylabel('Voltage (uV)');
-% clear electrode;
-
-% N1 + P2 PEAK/TIME WINDOW - TARGETS
-electrode = 13;
-figure;
-boundedline(EEG.times,squeeze(mean(mean(erp_out(:,1,electrode,:,:),4),5)), squeeze(std(0))./sqrt(nsubs),'m'),...
-    set(gca,'Color',[1 1 1]);
-set(gca,'YDir','reverse');
-axis tight; ylim([-8 12]);
-line([-200 1000],[0 0],'color','k');
-line([0 0],[-2.5 8],'color','k');
-title('Target Grand ERPs');
-xlabel('Time (ms)');
-ylabel('Voltage (uV)');
- fill([118;118;218;218],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
- fill([218;218;318;318],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
-clear electrode;
-
-% N1 + P2 PEAK/TIME WINDOW - STANDARDS
-electrode = 13;
-figure;
-boundedline(EEG.times,squeeze(mean(mean(erp_out(:,2,electrode,:,:),4),5)), squeeze(std(0))./sqrt(nsubs),'m'),...
-    set(gca,'Color',[1 1 1]);
-set(gca,'YDir','reverse');
-axis tight; ylim([-8 12]);
-line([-200 1000],[0 0],'color','k');
-line([0 0],[-2.5 8],'color','k');
-title('Standard Grand ERPs');
-xlabel('Time (ms)');
-ylabel('Voltage (uV)');
- fill([118;118;218;218],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
- fill([218;218;318;318],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
-clear electrode;
-
-
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -460,6 +383,80 @@ t = colorbar('peer',gca);
 set(get(t,'ylabel'),'String', 'Standards');
 
 clear time_window 
+
+
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%% TIME WINDOW + PEAK AVERAGES TO DETERMINE STATS WINDOW.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% P3 PEAK (DIFFERENCE-WAVES)
+%trying out on difference
+erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
+electrode = 15;
+figure;
+boundedline(EEG.times,squeeze(mean(mean(erp_diff_out(:,electrode,:,:),4),3)), squeeze(std(0))./sqrt(nsubs),'m'),...
+    set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-2.5 8],'color','k');
+title('Difference-Wave Grand ERPs');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
+fill([355;355;505;505],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+clear electrode;
+
+% MMN/N2b % NOT INCLUDING IN MANUSCRIPT UNLESS SIGNIFICANT
+% electrode = 13;
+% figure;
+% boundedline(EEG.times,squeeze(mean(mean(erp_diff_out(:,electrode,:,:),4),3)), squeeze(std(0))./sqrt(nsubs),'m'),...
+% set(gca,'Color',[1 1 1]);
+% set(gca,'YDir','reverse');
+% axis tight; ylim([-12 16]);
+% line([-200 1000],[0 0],'color','k');
+% line([0 0],[-2.5 8],'color','k');
+% title('Difference-Wave Grand ERPs');
+% xlabel('Time (ms)');
+% ylabel('Voltage (uV)');
+% clear electrode;
+
+% N1 + P2 PEAK/TIME WINDOW - TARGETS
+electrode = 13;
+figure;
+boundedline(EEG.times,squeeze(mean(mean(erp_out(:,1,electrode,:,:),4),5)), squeeze(std(0))./sqrt(nsubs),'m'),...
+    set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-2.5 8],'color','k');
+title('Target Grand ERPs');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
+ fill([118;118;218;218],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+ fill([218;218;318;318],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
+clear electrode;
+
+% N1 + P2 PEAK/TIME WINDOW - STANDARDS
+electrode = 13;
+figure;
+boundedline(EEG.times,squeeze(mean(mean(erp_out(:,2,electrode,:,:),4),5)), squeeze(std(0))./sqrt(nsubs),'m'),...
+    set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-2.5 8],'color','k');
+title('Standard Grand ERPs');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
+ fill([118;118;218;218],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
+ fill([218;218;318;318],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
+clear electrode;
+
+
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
