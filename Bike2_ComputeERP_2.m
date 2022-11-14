@@ -172,7 +172,7 @@ erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Targets on same axis
-electrode = 15;
+electrode = 13;
 
 figure;
 boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,1,:),5)), squeeze(std(erp_out(:,1,electrode,1,:),[],5))./sqrt(nsubs),'b',...
@@ -241,7 +241,7 @@ clear time_window;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Standards on same axis
-electrode = 13;
+electrode = 15;
 figure;
 boundedline(EEG.times,squeeze(mean(erp_out(:,2,electrode,1,:),5)), squeeze(std(erp_out(:,2,electrode,1,:),[],5))./sqrt(nsubs),'b',...
     EEG.times,squeeze(mean(erp_out(:,2,electrode,2,:),5)), squeeze(std(erp_out(:,2,electrode,2,:),[],5))./sqrt(nsubs),'g', ...
@@ -455,6 +455,288 @@ ylabel('Voltage (uV)');
  fill([118;118;218;218],[-8;12;12;-8],'w','FaceAlpha',0.1, 'EdgeAlpha', '1', 'Linestyle', ':');
  fill([218;218;318;318],[-8;12;12;-8],'w','FaceAlpha',0.1,'EdgeAlpha', '1', 'Linestyle', ':');
 clear electrode;
+
+%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%                  BARGRAPHS
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% N1  FZ standards and targets
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+electrode = 13;
+time_window = find(EEG.times>118,1)-1:find(EEG.times>218,1)-2;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%STANDARDS
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+hmean = mean(squeeze(mean(erp_out(time_window,2,electrode,1,:),5)));
+imean = mean(squeeze(mean(erp_out(time_window,2,electrode,2,:),5)));
+lmean = mean(squeeze(mean(erp_out(time_window,2,electrode,3,:),5)));
+
+hsd = mean(squeeze(std(erp_out(time_window,2,electrode,1,:),[],5))./sqrt(nsubs));
+isd = mean (squeeze(std(erp_out(time_window,2,electrode,2,:),[],5))./sqrt(nsubs));
+lsd = mean(squeeze(std(erp_out(time_window,2,electrode,3,:),[],5))./sqrt(nsubs));
+
+n1_mean_fz = [hmean; imean; lmean]';
+n1_sd_fz = [hsd; isd; lsd]';
+
+conds_plot = {'Heavy'; 'Intermediate';'Low'}; 
+figure;
+subplot (2,4,1)
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(n1_mean_fz,n1_sd_fz);
+ylim([-6 0])
+%ylabel('Standards Fz')
+% xlabel('Condition')
+title('Standards Fz')
+legend(conds_plot)
+
+clear hmean imean lmean hsd isd lsd n1_mean_fz n1_sd_fz
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+% TARGET N1 TIME WINDOW FZ
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+hmean = mean(squeeze(mean(erp_out(time_window,1,electrode,1,:),5)));
+imean = mean(squeeze(mean(erp_out(time_window,1,electrode,2,:),5)));
+lmean = mean(squeeze(mean(erp_out(time_window,1,electrode,3,:),5)));
+
+hsd = mean(squeeze(std(erp_out(time_window,1,electrode,1,:),[],5))./sqrt(nsubs));
+isd = mean (squeeze(std(erp_out(time_window,1,electrode,2,:),[],5))./sqrt(nsubs));
+lsd = mean(squeeze(std(erp_out(time_window,1,electrode,3,:),[],5))./sqrt(nsubs));
+
+tn1_mean_fz = [hmean; imean; lmean]';
+tn1_sd_fz = [hsd; isd; lsd]';
+
+conds_plot = {'Heavy'; 'Intermediate';'Low'}; 
+subplot (2,4,2)
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(tn1_mean_fz,tn1_sd_fz);
+ylim([-6 0])
+%ylabel('Targets Fz')
+% xlabel('Condition')
+title('Targets Fz')
+%legend(conds_plot)
+
+clear hmean imean lmean hsd isd lsd n1_mean_fz n1_sd_fz electrode time_window
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%        N1 PZ
+%
+%
+%%%%%%%%%%%%%%%%%%%%%
+electrode = 15;
+time_window = find(EEG.times>118,1)-1:find(EEG.times>218,1)-2;
+
+%STANDARDS
+hmean = mean(squeeze(mean(erp_out(time_window,2,electrode,1,:),5)));
+imean = mean(squeeze(mean(erp_out(time_window,2,electrode,2,:),5)));
+lmean = mean(squeeze(mean(erp_out(time_window,2,electrode,3,:),5)));
+
+hsd = mean(squeeze(std(erp_out(time_window,2,electrode,1,:),[],5))./sqrt(nsubs));
+isd = mean (squeeze(std(erp_out(time_window,2,electrode,2,:),[],5))./sqrt(nsubs));
+lsd = mean(squeeze(std(erp_out(time_window,2,electrode,3,:),[],5))./sqrt(nsubs));
+
+n1_mean_pz = [hmean; imean; lmean]';
+n1_sd_pz = [hsd; isd; lsd]';
+
+conds_plot = {'Heavy'; 'Intermediate';'Low'}; 
+subplot (2,4,3)
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(n1_mean_pz,n1_sd_pz);
+ylim([-6 0])
+%ylabel('Standards Pz')
+% xlabel('Condition')
+title('Standards Pz')
+%legend(conds_plot)
+
+clear hmean imean lmean hsd isd lsd n1_mean_fz n1_sd_fz
+
+%TARGET N1 TIME WINDOW FZ
+
+%Targets
+
+hmean = mean(squeeze(mean(erp_out(time_window,1,electrode,1,:),5)));
+imean = mean(squeeze(mean(erp_out(time_window,1,electrode,2,:),5)));
+lmean = mean(squeeze(mean(erp_out(time_window,1,electrode,3,:),5)));
+
+hsd = mean(squeeze(std(erp_out(time_window,1,electrode,1,:),[],5))./sqrt(nsubs));
+isd = mean (squeeze(std(erp_out(time_window,1,electrode,2,:),[],5))./sqrt(nsubs));
+lsd = mean(squeeze(std(erp_out(time_window,1,electrode,3,:),[],5))./sqrt(nsubs));
+
+tn1_mean_pz = [hmean; imean; lmean]';
+tn1_sd_pz = [hsd; isd; lsd]';
+
+conds_plot = {'Heavy'; 'Intermediate';'Low'}; 
+subplot (2,4,4)
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(tn1_mean_pz,tn1_sd_pz);
+ylim([-6 0])
+%ylabel('Targets Pz')
+% xlabel('Condition')
+title('Targets Pz')
+%legend(conds_plot)
+
+clear hmean imean lmean hsd isd lsd n1_mean_fz n1_sd_fz electrode time_window
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%    P2 FZ
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+time_window = find(EEG.times>218,1)-1:find(EEG.times>318,1)-2;
+electrode = 13;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%STANDARDS
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+hmean = mean(squeeze(mean(erp_out(time_window,2,electrode,1,:),5)));
+imean = mean(squeeze(mean(erp_out(time_window,2,electrode,2,:),5)));
+lmean = mean(squeeze(mean(erp_out(time_window,2,electrode,3,:),5)));
+
+hsd = mean(squeeze(std(erp_out(time_window,2,electrode,1,:),[],5))./sqrt(nsubs));
+isd = mean (squeeze(std(erp_out(time_window,2,electrode,2,:),[],5))./sqrt(nsubs));
+lsd = mean(squeeze(std(erp_out(time_window,2,electrode,3,:),[],5))./sqrt(nsubs));
+
+P2_mean_fz = [hmean; imean; lmean]';
+P2_sd_fz = [hsd; isd; lsd]';
+
+conds_plot = {'Heavy'; 'Intermediate';'Low'}; 
+subplot (2,4,5)
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(P2_mean_fz,P2_sd_fz);
+ylim([-2 0])
+%ylabel('Standards Pz')
+% xlabel('Condition')
+title('Standards Pz')
+legend(conds_plot)
+
+clear hmean imean lmean hsd isd lsd n1_mean_fz n1_sd_fz 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+% TARGET 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+hmean = mean(squeeze(mean(erp_out(time_window,1,electrode,1,:),5)));
+imean = mean(squeeze(mean(erp_out(time_window,1,electrode,2,:),5)));
+lmean = mean(squeeze(mean(erp_out(time_window,1,electrode,3,:),5)));
+
+hsd = mean(squeeze(std(erp_out(time_window,1,electrode,1,:),[],5))./sqrt(nsubs));
+isd = mean (squeeze(std(erp_out(time_window,1,electrode,2,:),[],5))./sqrt(nsubs));
+lsd = mean(squeeze(std(erp_out(time_window,1,electrode,3,:),[],5))./sqrt(nsubs));
+
+tp2_mean_fz = [hmean; imean; lmean]';
+tp2_sd_fz = [hsd; isd; lsd]';
+
+conds_plot = {'Heavy'; 'Intermediate';'Low'}; 
+subplot (2,4,6)
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(tp2_mean_fz,tp2_sd_fz);
+ylim([-5 0])
+%ylabel('Targets Fz')
+% xlabel('Condition')
+title('Targets Fz')
+%legend(conds_plot)
+
+clear hmean imean lmean hsd isd lsd n1_mean_fz n1_sd_fz electrode
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%    P2 PZ
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+electrode = 15;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%STANDARDS
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+hmean = mean(squeeze(mean(erp_out(time_window,2,electrode,1,:),5)));
+imean = mean(squeeze(mean(erp_out(time_window,2,electrode,2,:),5)));
+lmean = mean(squeeze(mean(erp_out(time_window,2,electrode,3,:),5)));
+
+hsd = mean(squeeze(std(erp_out(time_window,2,electrode,1,:),[],5))./sqrt(nsubs));
+isd = mean (squeeze(std(erp_out(time_window,2,electrode,2,:),[],5))./sqrt(nsubs));
+lsd = mean(squeeze(std(erp_out(time_window,2,electrode,3,:),[],5))./sqrt(nsubs));
+
+p2_mean_pz = [hmean; imean; lmean]';
+p2_sd_pz = [hsd; isd; lsd]';
+
+conds_plot = {'Heavy'; 'Intermediate';'Low'}; 
+subplot (2,4,7)
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(p2_mean_pz,p2_sd_pz);
+ylim([0 2])
+%ylabel('Standards Pz')
+% xlabel('Condition')
+title('Standards Pz')
+%legend(conds_plot)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+% TARGET 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+hmean = mean(squeeze(mean(erp_out(time_window,1,electrode,1,:),5)));
+imean = mean(squeeze(mean(erp_out(time_window,1,electrode,2,:),5)));
+lmean = mean(squeeze(mean(erp_out(time_window,1,electrode,3,:),5)));
+
+hsd = mean(squeeze(std(erp_out(time_window,1,electrode,1,:),[],5))./sqrt(nsubs));
+isd = mean (squeeze(std(erp_out(time_window,1,electrode,2,:),[],5))./sqrt(nsubs));
+lsd = mean(squeeze(std(erp_out(time_window,1,electrode,3,:),[],5))./sqrt(nsubs));
+
+tp2_mean_pz = [hmean; imean; lmean]';
+tp2_sd_pz = [hsd; isd; lsd]';
+
+conds_plot = {'Heavy'; 'Intermediate';'Low'}; 
+subplot (2,4,8)
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(tp2_mean_pz,tp2_sd_pz);
+ylim([-1.4 .9])
+%ylabel('Targets Pz')
+% xlabel('Condition')
+title('Targets Pz')
+%legend(conds_plot)
+
+clear hmean imean lmean hsd isd lsd n1_mean_fz n1_sd_fz electrode
 
 
 %%

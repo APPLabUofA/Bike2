@@ -203,6 +203,7 @@ barweb(grand_mean_prop_corracc,grand_withinSE_prop_corr);
 ylabel('Proportion')
 xlabel('Condition')
 title('Proportion of Targets responded to')
+%%
 
 here = [100, 200,300];
 there = [10, 20, 30];
@@ -214,10 +215,12 @@ acc_sask = medianACC_correct(:,1);
 acc_110 = medianACC_correct(:,2);
 acc_83 = medianACC_correct(:,3);
 
-
-
-%% REACTION TIME
-
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%                       % REACTION TIME
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 ccc
 exp = 'bike2';
@@ -233,7 +236,7 @@ new_conds = {'Sask Drive'; '110 Street'; '83 Avenue'};
 
 %preferred, clockwise - non-preffered, CCW
 nconds = length(conds);
-Pathname = 'M:\Data\Bike_Mazumder\';
+Pathname = 'M:\Data\Bike_lanes\';;
 
 % if ~exist([Pathname 'segments\'])
 %     mkdir([Pathname 'segments\']);
@@ -400,7 +403,7 @@ prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,n_conditions);
 grand_withinSE_prop_corr = std(prop_corr_deviation)/sqrt(nsubs);
 %% original 4 conditions plus proportion correct
 %plot it
-%conds_plot = {'Sask'; '110 Street';'83 Ave'}; 
+conds_plot = {'Sask'; '110 Street';'83 Ave'}; 
 figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
@@ -409,7 +412,7 @@ barweb(grand_mean_RT_Corr,grand_withinSE_RT_Corr);
 ylim([450 650])
 ylabel('Median RT (ms)')
 xlabel('Condition')
-title('Target Reaction Time (w/i subject SE)')
+title('Target Reaction Time')
 legend(conds_plot)
 subplot(1,2,2)
 barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
