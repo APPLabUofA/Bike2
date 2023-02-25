@@ -171,8 +171,9 @@ sub_mean_ACC_Corr = mean(medianACC_correct,2); %average for each subject
 mean_ACC_Corr_deviation = medianACC_correct - repmat(sub_mean_ACC_Corr,1,n_conditionsacc);
 
 %calculating standard errors for plots
-SE_Pacc = nanstd(mean(medianACC_correct(:,1:2),2))/sqrt(nsubsacc); 
-SE_NPacc = nanstd(mean(medianACC_correct(:,3:4),2))/sqrt(nsubsacc);
+SE_heavyacc = nanstd(mean(medianACC_correct(:,1),2))/sqrt(nsubsacc); 
+SE_interacc = nanstd(mean(medianACC_correct(:,2),2))/sqrt(nsubsacc); 
+SE_lowacc = nanstd(mean(medianACC_correct(:,3),2))/sqrt(nsubsacc); 
 
 %then take the standard error of those deviatoins from the mean
 grand_withinSE_ACC_Corr = std(mean_ACC_Corr_deviation)/sqrt(nsubsacc);
@@ -186,23 +187,23 @@ grand_withinSE_prop_corr = nanstd(prop_corr_deviationacc)/sqrt(nsubsacc);
 
 %% original 4 conditions plus proportion correct
 % %plot it
-conds_plot = {'Saskatchewan Lane'; '110 St. Lane';'83 Ave. Lane'}; 
+conds_plot = {'Heavy'; 'Intermediate';'Low'}; 
 figure;
-subplot (1,2,1)
+subplot (1,2,2)
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
 barweb(grand_mean_ACC_Corr,grand_withinSE_ACC_Corr);
  ylim([90 100])
-ylabel('Mean Accuracy')
+ylabel('Median Accuracy')
 xlabel('Condition')
 title('Target Accuracy')
 legend(conds_plot)
-subplot(1,2,2)
-barweb(grand_mean_prop_corracc,grand_withinSE_prop_corr);
- ylim([.9 1])
-ylabel('Proportion')
-xlabel('Condition')
-title('Proportion of Targets responded to')
+% subplot(1,2,2)
+% barweb(grand_mean_prop_corracc,grand_withinSE_prop_corr);
+%  ylim([.9 1])
+% ylabel('Proportion')
+% xlabel('Condition')
+% title('Proportion of Targets responded to')
 %%
 
 here = [100, 200,300];
@@ -403,8 +404,7 @@ prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,n_conditions);
 grand_withinSE_prop_corr = std(prop_corr_deviation)/sqrt(nsubs);
 %% original 4 conditions plus proportion correct
 %plot it
-conds_plot = {'Sask'; '110 Street';'83 Ave'}; 
-figure;
+conds_plot = {'Heavy'; 'Intermediate';'Low'}; 
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
 subplot(1,2,1)
@@ -414,12 +414,12 @@ ylabel('Median RT (ms)')
 xlabel('Condition')
 title('Target Reaction Time')
 legend(conds_plot)
-subplot(1,2,2)
-barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
-ylim([.9 1])
-ylabel('Proportion')
-xlabel('Condition')
-title('Proportion of Targets responded to')
+% subplot(1,2,2)
+% barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
+% ylim([.9 1])
+% ylabel('Proportion')
+% xlabel('Condition')
+% title('Proportion of Targets responded to')
 
 %Jasp variables for excel
 rt_sask = medianRT_correct(:,1);
